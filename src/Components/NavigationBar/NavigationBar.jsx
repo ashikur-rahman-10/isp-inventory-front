@@ -1,25 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
+import  { useContext, useEffect } from "react";
 import { Link, NavLink, useLocation, useNavigate, } from "react-router-dom";
 import "./NavigationBar.css";
 import { AuthContext } from "../../Providers/AuthProviders";
 import logo from "../../assets/logo.png";
 
-import UseCart from "../../Hooks/UseCart";
 import UseAdmin from "../../Hooks/UseAdmin";
 
-import { FaBox, FaGrinStars, FaSignOutAlt, FaSmileBeam } from "react-icons/fa";
-import { MdDashboardCustomize } from "react-icons/md";
+import { FaSignOutAlt, FaSmileBeam } from "react-icons/fa";
 import CustomLoader from "../CustomLoader/CustomLoader";
 import Swal from "sweetalert2";
-import UseAllBooks from "../../Hooks/UseAllBooks";
-import { TfiWrite } from "react-icons/tfi";
-import { IoNewspaperOutline } from "react-icons/io5";
+
 
 const NavigationBar = () => {
   const { user, loading, logout } = useContext(AuthContext);
-  const [searchTerm, setSearchTerm] = useState("");
-  const { books } = UseAllBooks();
-  const { cart, cartRefetch } = UseCart(user?.email);
   const { admin, usersRefetch } = UseAdmin();
   const navigate = useNavigate();
   const location = useLocation();
@@ -40,7 +33,6 @@ const NavigationBar = () => {
           .catch((error) => { });
       }, 3000);
     }
-    cartRefetch();
     usersRefetch()
   }, [user]);
 
@@ -55,23 +47,8 @@ const NavigationBar = () => {
   }
 
 
-  const handleSearchChange = (event) => {
-    const searchTerm = event.target.value;
-    setSearchTerm(searchTerm);
-  };
 
-  let filteredBooks = [];
 
-  if (searchTerm) {
-    filteredBooks = books.filter(
-      (book) =>
-        book.bookName?.toLowerCase().includes(searchTerm.toLowerCase()) || // Search by Bengali book name
-        book.bookName_en?.toLowerCase().includes(searchTerm.toLowerCase()) || // Search by English book name
-        book.writerName?.toLowerCase().includes(searchTerm.toLowerCase()) || // Search by English book name
-        book.publications?.toLowerCase().includes(searchTerm.toLowerCase()) || // Search by English book name
-        book.keywords?.toLowerCase().includes(searchTerm.toLowerCase()) // Search by English book name
-    );
-  }
 
   if (loading) {
     return <CustomLoader></CustomLoader>
@@ -87,7 +64,7 @@ const NavigationBar = () => {
             </Link>
           </div>
 
-           <div className=" pb-2  w-full text-center  ">
+           <div className="w-full text-center  ">
           <NavLink
             className="font-medium px-3 py-2 rounded-lg hover:bg-slate-200 lg:text-[13px] text-xs text-success"
             to={"/"}
@@ -142,16 +119,6 @@ const NavigationBar = () => {
                       <span className="text-sm"> Manage My Account</span>
                     </NavLink>
                   </li>
-
-
-                  {/* {
-                    user && admin && <li>
-                      <NavLink to={"/dashboard"}>
-                        <MdDashboardCustomize className="text-xl  text-green-600"></MdDashboardCustomize>{" "}
-                        <span className="text-sm">Dashboard</span>
-                      </NavLink>
-                    </li>
-                  } */}
                   {user && (
                     <li>
                       <a onClick={handleLogout} className="text-red-400">
@@ -164,9 +131,7 @@ const NavigationBar = () => {
               </div>
             )}
           </div>
-        </div>
-        {/* Main menu */}
-       
+        </div>       
       </div>
     </div>
   );

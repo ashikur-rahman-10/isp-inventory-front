@@ -17,29 +17,10 @@ const AddBook = () => {
   const [showModal3, setShowModal3] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showDropdown1, setShowDropdown1] = useState(false);
 
   const [axiosSecure] = UseAxiosSecure();
 
-  // get catagories
-  const { data: cats = [], refetch: catagoriesRefetch } = useQuery({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const res = await axiosSecure.get(`/categories`);
-      setLoading(false);
-      return res.data;
-    },
-  });
 
-  // get publications
-  const { data: publications = [], refetch: publicationsRefetch } = useQuery({
-    queryKey: ["publications"],
-    queryFn: async () => {
-      const res = await axiosSecure.get(`/publications`);
-      setLoading(false);
-      return res.data;
-    },
-  });
   // get writers
   const { data: writers = [], refetch: writersRefetch } = useQuery({
     queryKey: ["writers"],
@@ -74,68 +55,7 @@ const AddBook = () => {
     setShowModal3(false); // Close modal after adding category
   };
 
-  // Add New categories
-  const handleAddNewCategory = (event) => {
-    event.preventDefault();
-
-    const newCategoryValue = event.target.newCategory.value;
-    const token = localStorage.getItem("access-token");
-
-    fetch("https://bornomala-boighor-server.vercel.app/categories", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-      body: JSON.stringify({ cat: newCategoryValue }), // Corrected the object key here
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.acknowledged) {
-          catagoriesRefetch();
-          toast.success("Successfully Added");
-        }
-      });
-
-    setShowModal1(false); // Close modal after adding category
-  };
-
-  // Add new publications
-  const handleAddNewPublication = (event) => {
-    event.preventDefault();
-
-    const newPublicatonValue = event.target.newPublication.value;
-    const token = localStorage.getItem("access-token");
-
-    fetch("https://bornomala-boighor-server.vercel.app/publications", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-      body: JSON.stringify({ pub: newPublicatonValue }), // Corrected the object key here
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.acknowledged) {
-          toast.success("Successfully Added");
-          publicationsRefetch();
-        }
-      });
-
-    setShowModal2(false); // Close modal after adding category
-  };
-
-  // Handle publication search
-  const handlePublicationSearch = (event) => {
-    const query = event.target.value ? event.target.value.toLowerCase() : "";
-    const filteredPublications = publications.filter(
-      (pub) => pub && pub.pub && pub.pub.toLowerCase().includes(query)
-    );
-    setSearchResults(filteredPublications);
-    setShowDropdown(true);
-  };
-
+ 
   // Handle Writer Search
   const handleWriterSearch = (event) => {
     const query = event.target.value ? event.target.value.toLowerCase() : "";
@@ -146,7 +66,7 @@ const AddBook = () => {
         writer.writerName.toLowerCase().includes(query)
     );
     setSearchResults(filteredWriter);
-    setShowDropdown1(true);
+    setShowDropdown(true);
   };
 
   // Handle Form input
@@ -158,17 +78,11 @@ const AddBook = () => {
     formState: { errors },
   } = useForm();
 
-  const handleDropdownItemClick = (publication) => {
-    setValue("publications", publication, { shouldValidate: true });
-
-    setShowDropdown(false);
-  };
-
   // Set Writer Value
   const handleWriterDropdown = (writer) => {
     setValue("writerName", writer, { shouldValidate: true });
 
-    setShowDropdown1(false);
+    setShowDropdown(false);
   };
 
   const imageHostingUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMAGE_HOSTING_KEY
@@ -249,17 +163,16 @@ const AddBook = () => {
   });
 
   return (
-    <div className="flex flex-col w-full items-center md:pt-8">
-      <h1 className="text-center py-8 text-2xl">Add a Book to your shop</h1>
+    <div className="flex flex-col w-full items-center">
+      <h1 className="text-center md:pb-4 text-2xl">Add a Book to your shop</h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-fit  rounded-lg shadow-md flex flex-col justify-center items-center p-8 mb-8 text-xs"
+        className="w-fit  rounded-lg shadow-md flex flex-col justify-center items-center p-8 mb-8 text-sm"
       >
-     
-        <div className="flex md:flex-row md:gap-4 flex-col">
-          <div className="form-control">
-            <label className="label">
+ 
+           <fieldset className="fieldset">
+             <label className="label">
               <span className="text-xs text-[#757575dc] font-medium">
                 Book name
               </span>
@@ -270,21 +183,8 @@ const AddBook = () => {
               {...register("bookName", { required: true })}
               className="border border-success rounded-sm p-1 focus:outline-none lg:w-[350px] w-[300px]"
             />
-          </div>
-        
-        </div>
 
-        <div className="flex md:flex-row md:gap-4 flex-col">   
-
-          {/* Writer Input */}
-
-          <div className="form-control ">
-            <label className="label">
-              <span className="text-xs text-[#757575] font-medium ">
-                Writer Name
-              </span>
-            </label>
-            <div className="relative">
+               <div className="relative">
               <input
                 type="text"
                 placeholder="Search Writer name"
@@ -299,16 +199,21 @@ const AddBook = () => {
                 New
               </button>
             </div>
+         
 
-            {showDropdown1 && (
-              <span>
+            {showDropdown && (
+              <span className="relative">
+              
                 {searchResults.length > 0 && (
-                  <div className="absolute z-10  lg:w-[350px] w-[300px] bg-white border border-gray-200 rounded-sm shadow-md">
+                  
+                  <div className="absolute z-10  md:w-[380px] w-[300px] max-h-72 overflow-y-scroll bg-white border border-gray-200 rounded-sm shadow-md">
+                      <button onClick={()=>{setShowDropdown(false)
+                }} className="px-[11px] text-base py-[4px] hover:bg-slate-100 hover:text-red-400 -top-0 right-0 rounded-full border border-red-500 absolute z-40  font-bold">X</button>
                     {searchResults.map((result) => (
                       <div
-                        key={result._id}
-                        className="p-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => handleWriterDropdown(result.writerName)}
+                      key={result._id}
+                      className="p-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleWriterDropdown(result.writerName)}
                       >
                         {result.writerName}
                       </div>
@@ -317,14 +222,8 @@ const AddBook = () => {
                 )}
               </span>
             )}
-          </div>
-        </div>
 
-        <div className="flex md:flex-row md:gap-4 flex-col">
 
-          {/* Image Input */}
-
-          <div className="form-control">
             <label className="label">
               <span className="text-xs text-[#757575] font-medium ">Photo</span>
             </label>
@@ -333,14 +232,9 @@ const AddBook = () => {
               {...register("image", { required: true })}
               className="border border-success rounded-sm p-1 focus:outline-none lg:w-[350px] w-[300px]"
             />
-          </div>
 
-        </div>
-        <div className="flex md:flex-row md:gap-4 flex-col">
 
-          {/* Price input */}
 
-          <div className="form-control">
             <label className="label">
               <span className="text-xs text-[#757575] font-medium ">Price</span>
             </label>
@@ -350,11 +244,8 @@ const AddBook = () => {
               {...register("price")}
               className="border border-success rounded-sm p-1 focus:outline-none lg:w-[350px] w-[300px]"
             />
-          </div>
 
-          {/* Buying price */}
 
-          <div className="form-control">
             <label className="label">
               <span className="text-xs text-[#757575] font-medium ">Buying Price</span>
             </label>
@@ -364,12 +255,8 @@ const AddBook = () => {
               {...register("buyingPrice")}
               className="border border-success rounded-sm p-1 focus:outline-none lg:w-[350px] w-[300px]"
             />
-          </div>
-        </div>
-        <div className="flex md:flex-row md:gap-4 flex-col">
-        
-          {/* Quantity */}
-          <div className="form-control">
+
+
             <label className="label">
               <span className="text-xs text-[#757575] font-medium ">
                 Quantity
@@ -381,11 +268,9 @@ const AddBook = () => {
               {...register("quantity", { required: true })}
               className="border border-success rounded-sm p-1 focus:outline-none lg:w-[350px] w-[300px]"
             />
-          </div>
 
-        </div>
-        <div className="flex md:flex-row md:gap-4 flex-col">
-                   <div className="form-control">
+
+   
             <label className="label">
               <span className="text-xs text-[#757575] font-medium ">
                 Keywords
@@ -397,14 +282,14 @@ const AddBook = () => {
               {...register("keywords")}
               className="border border-success rounded-sm p-1 focus:outline-none lg:w-[350px] w-[300px]"
             />
-          </div>
-        </div>
+
      
 
+           </fieldset>
         <input
           type="submit"
           value={"Save"}
-          className="border border-success py-1 px-3 mt-4 rounded-xl cursor-pointer hover:scale-110 duration-300 hover:bg-success hover:text-white hover:border-warning"
+          className="border border-success py-1 px-10 mt-4 rounded-xl cursor-pointer hover:scale-110 duration-300 hover:bg-success hover:text-white hover:border-warning"
         />
       </form>
 
@@ -473,14 +358,14 @@ const AddBook = () => {
       {showModal3 && (
         <form
           onSubmit={handleAddNewWriter}
-          className="fixed z-30 inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50"
+          className="fixed z-30 inset-0 flex items-center justify-center bg-gray-300 bg-opacity-50"
         >
-          <div className="bg-white p-4 rounded-md flex gap-3 flex-col items-center justify-center">
+          <div className="bg-white md:w-[450px] w-96 p-4 rounded-md flex gap-3 flex-col items-center justify-center">
             <h2 className="text-xl font-semibold mb-2">Add New Writer</h2>
             <input
               type="text"
               name="newWriter"
-              className="border border-gray-300 rounded-md p-2 mb-2  w-72"
+              className="border border-green-500 rounded-md p-2 mb-2 md:w-[400px]  w-80"
               placeholder="Enter Writers name"
             />
             <div>
