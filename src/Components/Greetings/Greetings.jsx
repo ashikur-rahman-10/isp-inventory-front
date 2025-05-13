@@ -25,7 +25,7 @@ const Greeting = () => {
 
     return (
         <div className="w-full md:h-[250px]">
-            <h1 className="text-2xl md:text-5xl md:pt-16 ">
+            <h1 className="text-2xl md:text-5xl  ">
                 {greeting}, {user?.displayName}
             </h1>
             <h3 className="md:text-4xl md:pt-5 pb-8 md:">Welcome...</h3>

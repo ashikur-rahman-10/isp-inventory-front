@@ -64,32 +64,32 @@ const AuthProviders = ({ children }) => {
 
     // use onauthState change
     useEffect(() => {
-        // const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-        //     setUser(currentUser);
-        //     setLoading(false);
-        // });
-
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
-
-            if (currentUser) {
-                axios
-                    .post("https://bornomala-boighor-server.vercel.app/jwt", {
-                        email: currentUser.email,
-                    })
-                    .then((data) => {
-                        if (data.data) {
-                            localStorage.setItem(
-                                "access-token",
-                                data.data.token
-                            );
-                        }
-                    });
-            } else {
-                localStorage.removeItem("access-token");
-            }
             setLoading(false);
         });
+
+        // const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        //     setUser(currentUser);
+
+        //     if (currentUser) {
+        //         axios
+        //             .post("http://localhost:5000/jwt", {
+        //                 email: currentUser.email,
+        //             })
+        //             .then((data) => {
+        //                 if (data.data) {
+        //                     localStorage.setItem(
+        //                         "access-token",
+        //                         data.data.token
+        //                     );
+        //                 }
+        //             });
+        //     } else {
+        //         localStorage.removeItem("access-token");
+        //     }
+        //     setLoading(false);
+        // });
         return () => {
             unsubscribe();
         };

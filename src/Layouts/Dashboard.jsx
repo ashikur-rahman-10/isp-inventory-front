@@ -5,10 +5,6 @@ import {
     FaBook,
     FaClipboardList,
     FaHome,
-    FaUserSecret,
-    FaUsers,
-    FaBookOpen,
-    FaWallet,
     FaSellsy,
     FaChartBar,
 } from "react-icons/fa";
@@ -70,7 +66,7 @@ const Dashboard = () => {
     return (
         <div>
             <Helmet>
-                <title>Bornomala | Dashboaard</title>
+                <title>IHP-INV | Dashboaard</title>
             </Helmet>
             <div className="drawer drawer-mobile lg:drawer-open ">
                 <input

@@ -8,7 +8,7 @@ const Main = () => {
             <div className="z-40 fixed w-full max-w-7xl">
                 <NavigationBar></NavigationBar>
             </div>
-            <div className="pt-[93px] min-h-[100vh]">
+            <div className="pt-[60px] min-h-[100vh]">
                 <Outlet></Outlet>
             </div>
             <Footer></Footer>

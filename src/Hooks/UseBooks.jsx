@@ -1,45 +1,18 @@
-import { useEffect, useState } from "react";
-import UseAxiosSecure from "./UseAxiosSecure";
-import { useQuery } from "@tanstack/react-query";
+import UseAxiosSecure from './UseAxiosSecure';
+import { useQuery } from '@tanstack/react-query';
 
-const UseBooks = (page) => {
-    console.log(page);
-    const [totalPages, setTotalPages] = useState(1);
-    const [loading, setLoading] = useState(true);
-    const [books, setBooks] = useState([]);
+const useBooks = () => {
     const [axiosSecure] = UseAxiosSecure();
-
-    // Get books
-    const { data: objects = {}, refetch: booksRefetch, isError } = useQuery({
-        queryKey: ["books", page],
+    // get books
+    const { data: books = [], refetch: booksRefetch } = useQuery({
+        queryKey: ["books"],
         queryFn: async () => {
-            const res = await axiosSecure.get(`/books?page=${page}`);
+            const res = await axiosSecure.get(`/books`);
             return res.data;
         },
-        onError: () => {
-            setLoading(false);
-        },
     });
-
-    console.log(books);
-
-    useEffect(() => {
-        if (objects && objects.totalPages !== undefined && objects.books !== undefined) {
-            setTotalPages(objects.totalPages);
-            setBooks(objects.books);
-        } else {
-            setTotalPages(1);
-            setBooks([]);
-        }
-        setLoading(false);
-    }, [objects]);
-
-    useEffect(() => {
-        setLoading(true);
-        booksRefetch();
-    }, [page]);
-
-    return { books, totalPages, loading, isError };
+    return { books, booksRefetch }
 };
 
-export default UseBooks;
+export default useBooks;
+

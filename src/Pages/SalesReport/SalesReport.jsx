@@ -47,7 +47,7 @@ const SalesReport = () => {
     return (
         <div className="p-6 pt-12 bg-gray-50 min-h-screen">
             <Helmet>
-                <title>Bornomala | Sales Reports</title>
+                <title>IHP-INV | Sales Reports</title>
             </Helmet>
             <h2 className="text-2xl font-semibold my-4">Sales Report</h2>
             <div className="flex flex-col md:flex-row md:items-end md:space-x-4 mb-4">

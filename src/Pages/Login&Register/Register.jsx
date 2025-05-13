@@ -55,7 +55,7 @@ const Register = () => {
                         await verification(loggedUser);
 
                         // Send savedUser to your server
-                        const response = await fetch("https://bornomala-boighor-server.vercel.app/users", {
+                        const response = await fetch("http://localhost:5000/users", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",
@@ -117,7 +117,7 @@ const Register = () => {
     }
 
     if (user) {
-        window.location.replace('https://bornomala-mart.web.app/');
+        window.location.replace('https://ihp-inv.web.app/');
     }
 
     // Scroll to top

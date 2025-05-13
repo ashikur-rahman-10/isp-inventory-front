@@ -74,7 +74,7 @@ const Login = () => {
     }, [error]);
 
     if (user) {
-        window.location.replace('https://bornomala-mart.web.app/')
+        window.location.replace('https://ihp-inv.web.app/')
     }
 
     // Scroll to top
